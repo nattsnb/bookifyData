@@ -4,7 +4,7 @@
       "id": 1,
       "location": {
         "streetAddress": "Suwalska",
-        "town": "ustrzyki dolne",
+        "city": "ustrzyki dolne",
         "postalCode": "38-700",
         "country": "Poland"
       },
@@ -17,7 +17,6 @@
   ],
   "venuesDetails": [
     {
-      "id": 12321,
       "venuesBasicData": {
         "id": 1,
         "location": {
