@@ -1,9 +1,12 @@
 import { faker } from "@faker-js/faker";
 // const { faker } = require('@faker-js/faker');
+import { saveAs } from "file-saver";
 
 function produceData() {
   let venues = [];
   let venuesDetails = [];
+  let data = { venues: venues, venuesDetails: venuesDetails };
+
   for (let i = 0; i < 100; i++) {
     const venue = {
       id: i,
@@ -60,8 +63,10 @@ function produceData() {
     };
     venuesDetails.push(venueDetails);
   }
-  console.log(venues);
-  console.log(venuesDetails);
+
+  let blob = new Blob([JSON.stringify(data)], { type: ".json" });
+
+  saveAs(blob, "data.json");
 }
 
 produceData();
