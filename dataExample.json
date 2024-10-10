@@ -17,6 +17,7 @@
   ],
   "venuesDetails": [
     {
+      "id": 1,
       "venuesBasicData": {
         "id": 1,
         "location": {

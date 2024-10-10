@@ -24,6 +24,7 @@ function produceData() {
     };
     venues.push(venue);
     const venueDetails = {
+      id: i,
       venuesBasicData: venue,
       description: faker.word.words(80),
       features: [
