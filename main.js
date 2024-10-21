@@ -2,6 +2,10 @@ import { faker } from "@faker-js/faker";
 // const { faker } = require('@faker-js/faker');
 import { saveAs } from "file-saver";
 
+const fs = require("fs");
+const { parse } = require("csv-parse");
+
+
 async function getPictureAddress() {
   const getPicsumResponse = await fetch("https://picsum.photos/282/186/");
   return getPicsumResponse.url;
