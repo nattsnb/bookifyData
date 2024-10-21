@@ -2,12 +2,24 @@ import { faker } from "@faker-js/faker";
 // const { faker } = require('@faker-js/faker');
 import { saveAs } from "file-saver";
 
+async function getPictureAddress() {
+  const getPicsumResponse = await fetch("https://picsum.photos/282/186/");
+  return getPicsumResponse.url;
+}
+
 function produceData() {
   let venues = [];
   let venuesDetails = [];
-  let data = { venues: venues, venuesDetails: venuesDetails };
+  let albums = [];
+  let data = { venues: venues, venuesDetails: venuesDetails, albums: albums };
 
   for (let i = 0; i < 100; i++) {
+    let album = [];
+    const numberOfPictures = faker.number.int({ min: 4, max: 10 });
+    for (let i = 0; i < numberOfPictures; i++) {
+      album.push(getPictureAddress());
+    }
+    albums.push(album);
     const venue = {
       id: i,
       location: {
@@ -16,11 +28,12 @@ function produceData() {
         postalCode: faker.location.zipCode(),
         country: faker.location.country(),
       },
-      pricePerNightInEUR: faker.number.float({ max: 100, multipleOf: 0.01 }),
+      pricePerNightInEURCent: faker.number.int({ max: 10000 }).toString(),
       rating: faker.number.float({ max: 5, multipleOf: 0.1 }),
       capacity: faker.number.int({ max: 10 }),
       name: `${faker.word.adjective()} ${faker.word.noun()}`,
       albumId: i,
+      coverPhoto: album[0],
     };
     venues.push(venue);
     const venueDetails = {
@@ -70,4 +83,4 @@ function produceData() {
   saveAs(blob, "data.json");
 }
 
-produceData();
+// produceData();
