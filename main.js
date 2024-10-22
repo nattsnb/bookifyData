@@ -1,16 +1,12 @@
 import { faker } from "@faker-js/faker";
-// const { faker } = require('@faker-js/faker');
 import { saveAs } from "file-saver";
-
-const fs = require("fs");
-const { parse } = require("csv-parse");
+import { addresses } from "/addresses.js";
 
 
 async function getPictureAddress() {
   const getPicsumResponse = await fetch("https://picsum.photos/282/186/");
-  return getPicsumResponse.url;
+  return getPicsumResponse.url
 }
-
 function produceData() {
   let venues = [];
   let venuesDetails = [];
@@ -18,6 +14,7 @@ function produceData() {
   let data = { venues: venues, venuesDetails: venuesDetails, albums: albums };
 
   for (let i = 0; i < 100; i++) {
+    const address = addresses[i]
     let album = [];
     const numberOfPictures = faker.number.int({ min: 4, max: 10 });
     for (let i = 0; i < numberOfPictures; i++) {
@@ -27,10 +24,10 @@ function produceData() {
     const venue = {
       id: i,
       location: {
-        streetAddress: faker.location.streetAddress(),
-        city: faker.location.city(),
-        postalCode: faker.location.zipCode(),
-        country: faker.location.country(),
+        streetNumber: address[0],
+        streetName: address[1],
+        postalCode: address[2],
+        city: "EXETER"
       },
       pricePerNightInEURCent: faker.number.int({ max: 10000 }).toString(),
       rating: faker.number.float({ max: 5, multipleOf: 0.1 }),
@@ -86,5 +83,4 @@ function produceData() {
 
   saveAs(blob, "data.json");
 }
-
-// produceData();
+produceData()
