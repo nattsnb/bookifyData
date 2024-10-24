@@ -3,23 +3,6 @@ import { saveAs } from "file-saver";
 import { addresses } from "/addresses.js";
 
 
-// async function getPictureAddress() {
-//   const url = "https://picsum.photos/282/186/"
-//   fetch()
-//   fetch(url, {
-//     method: 'GET',
-//     withCredentials: true,
-//     crossorigin: true,
-//     mode: 'no-cors',
-//   })
-//       .then(response => {
-//         return response
-//       })
-//       .then(response => {
-//         console.log(response)
-//       })
-// }
-
 async function getPictureAddress() {
   const getPicsumResponse = await fetch("https://picsum.photos/282/186/");
   return getPicsumResponse.url;
