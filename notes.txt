@@ -1,28 +1,27 @@
-1. Weddings
-Outdoor space or garden
-Bridal suite
-On-site catering
-2. Corporate Events
-Conference rooms
-High-speed Wi-Fi
-AV equipment
-3. Birthday Parties
-Private bar
-Photo booth
-Entertainment stage
-4. Concerts or Performances
-Stage with lighting
-Backstage or green room
-Soundproofing
-5. Exhibitions and Trade Shows
-Exhibition hall
-Modular exhibit spaces
-Loading dock
-6. Private Dinners
-Private dining rooms
-Fine dining catering
-Table service
-7. Outdoor Festivals
-Outdoor stage
-Portable restrooms
-Parking lot
+25 Venue Amenities:
+
+const venuesAmenities = ["Wi-Fi","Parking","Stage","Catering services","Audio-visual equipment","Outdoor space","Dance floor","Bridal suite","Private dining rooms","Bar service","Breakout rooms","Seating arrangements","Decor services","Projector and screen","Sound system","Lighting system","Climate control","Security staff","Restrooms","Photography area","Kid-friendly play area","Accessible facilities (wheelchair access, elevators, etc.)",""Green room","Ticketing services","Event planner services"]
+
+
+7 Occasions and Matching Amenities
+
+Wedding:
+5,7,3,12
+
+Corporate Event:
+0,4,10,13
+
+Birthday Party:
+8,9,20,19
+
+Concert or Performance:
+2,14,15,22
+
+Exhibition or Trade Show:
+11,0,16,23
+
+Private Dinner:
+8, 3, 9, 11
+
+Outdoor Festival:
+5,2,18,17

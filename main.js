@@ -22,7 +22,8 @@ async function produceFakerData() {
   const venues = [];
   const venuesDetails = [];
   const albums = [];
-  const data = { venues: venues, venuesDetails: venuesDetails, albums: albums };
+  const venuesAmenities = ["Wi-Fi", "Parking", "Stage", "Catering services", "Audio-visual equipment", "Outdoor space", "Dance floor", "Bridal suite", "Private dining rooms", "Bar service", "Breakout rooms", "Seating arrangements", "Decor services", "Projector and screen", "Sound system", "Lighting system", "Climate control", "Security staff", "Restrooms", "Photography area", "Kid-friendly play area", "Accessible facilities", "Green room", "Ticketing services", "Event planner services"]
+  const data = { venues: venues, venuesDetails: venuesDetails, albums: albums, venuesAmenities: venuesAmenities };
 
   for (let i = 0; i < 100; i++) {
     const address = addresses[i]
@@ -44,22 +45,17 @@ async function produceFakerData() {
       coverPhoto: album[0],
     };
     venues.push(venue);
+    const numberOfFeatures = faker.number.int({ min: 4, max: 10 })
+    let featuresArray = []
+    for (let i = 0; i > numberOfFeatures; i++){
+      const shuffledFeatures = featuresArray.sort(() => 0.5 - Math.random());
+      featuresArray = shuffledFeatures.slice(0, n);
+    }
     const venueDetails = {
       id: i,
       venuesBasicData: venue,
       description: faker.word.words(80),
-      features: [
-        "kitchen facilities",
-        "bathroom facilities",
-        "fireplace",
-        "hypoallergenic bedding",
-        "speakers",
-        "TV",
-        "WiFi",
-        "pet friendly",
-        "parking",
-        "lake or mountains nearby",
-      ],
+      features: featuresArray,
       sleepingDetails: {
         maxCapacity: venue.capacity,
         amountOfBeds: venue.capacity / 2,
