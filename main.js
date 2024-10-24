@@ -3,41 +3,47 @@ import { saveAs } from "file-saver";
 import { addresses } from "/addresses.js";
 
 
+// async function getPictureAddress() {
+//   const url = "https://picsum.photos/282/186/"
+//   fetch()
+//   fetch(url, {
+//     method: 'GET',
+//     withCredentials: true,
+//     crossorigin: true,
+//     mode: 'no-cors',
+//   })
+//       .then(response => {
+//         return response
+//       })
+//       .then(response => {
+//         console.log(response)
+//       })
+// }
+
 async function getPictureAddress() {
-  const url = "https://picsum.photos/282/186/"
-  fetch(url, {
-    method: 'GET',
-    withCredentials: true,
-    crossorigin: true,
-    mode: 'no-cors',
-  })
-      .then(response => {
-        console.log(response)
-      })
+  const getPicsumResponse = await fetch("https://picsum.photos/282/186/");
+  return getPicsumResponse.url;
 }
 
 function produceAlbum() {
-  let album = [];
+  const pictureAddressPromises = [];
   const numberOfPictures = faker.number.int({ min: 4, max: 10 });
   for (let i = 0; i < numberOfPictures; i++) {
-    const address = getPictureAddress()
-    album.push(address);
+    const addressPromise = getPictureAddress();
+    pictureAddressPromises.push(addressPromise);
   }
-  console.log(album)
-  return album
+  return Promise.all(pictureAddressPromises);
 }
 
-console.log(produceAlbum())
-
-function produceFakerData() {
-  let venues = [];
-  let venuesDetails = [];
-  let albums = [];
-  let data = { venues: venues, venuesDetails: venuesDetails, albums: albums };
+async function produceFakerData() {
+  const venues = [];
+  const venuesDetails = [];
+  const albums = [];
+  const data = { venues: venues, venuesDetails: venuesDetails, albums: albums };
 
   for (let i = 0; i < 100; i++) {
     const address = addresses[i]
-    const album = produceAlbum()
+    const album = await produceAlbum()
     albums.push(album);
     const venue = {
       id: i,
@@ -99,11 +105,10 @@ function produceFakerData() {
   return data
 }
 
-
 function saveTheFile(data){
   let blob = new Blob([JSON.stringify(data)], { type: ".json" });
-
   saveAs(blob, "data.json");
 }
 
-// saveTheFile(produceFakerData())
+produceFakerData()
+    .then(saveTheFile)
