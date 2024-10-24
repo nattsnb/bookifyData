@@ -4,10 +4,32 @@ import { addresses } from "/addresses.js";
 
 
 async function getPictureAddress() {
-  const getPicsumResponse = await fetch("https://picsum.photos/282/186/");
-  return getPicsumResponse.url
+  const url = "https://picsum.photos/282/186/"
+  fetch(url, {
+    method: 'GET',
+    withCredentials: true,
+    crossorigin: true,
+    mode: 'no-cors',
+  })
+      .then(response => {
+        console.log(response)
+      })
 }
-function produceData() {
+
+function produceAlbum() {
+  let album = [];
+  const numberOfPictures = faker.number.int({ min: 4, max: 10 });
+  for (let i = 0; i < numberOfPictures; i++) {
+    const address = getPictureAddress()
+    album.push(address);
+  }
+  console.log(album)
+  return album
+}
+
+console.log(produceAlbum())
+
+function produceFakerData() {
   let venues = [];
   let venuesDetails = [];
   let albums = [];
@@ -15,11 +37,7 @@ function produceData() {
 
   for (let i = 0; i < 100; i++) {
     const address = addresses[i]
-    let album = [];
-    const numberOfPictures = faker.number.int({ min: 4, max: 10 });
-    for (let i = 0; i < numberOfPictures; i++) {
-      album.push(getPictureAddress());
-    }
+    const album = produceAlbum()
     albums.push(album);
     const venue = {
       id: i,
@@ -78,9 +96,14 @@ function produceData() {
     };
     venuesDetails.push(venueDetails);
   }
+  return data
+}
 
+
+function saveTheFile(data){
   let blob = new Blob([JSON.stringify(data)], { type: ".json" });
 
   saveAs(blob, "data.json");
 }
-produceData()
+
+// saveTheFile(produceFakerData())
