@@ -48,7 +48,7 @@ async function produceFakerData() {
     const numberOfFeatures = faker.number.int({ min: 4, max: 10 })
     let featuresArray = []
     for (let i = 0; i > numberOfFeatures; i++){
-      const shuffledFeatures = featuresArray.sort(() => 0.5 - Math.random());
+      const shuffledFeatures = venuesAmenities.sort(() => 0.5 - Math.random());
       featuresArray = shuffledFeatures.slice(0, n);
     }
     const venueDetails = {
