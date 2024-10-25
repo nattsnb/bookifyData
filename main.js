@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker";
 import { saveAs } from "file-saver";
 import { addresses } from "/addresses.js";
 
+const venuesAmenities = ["Wi-Fi", "Parking", "Stage", "Catering services", "Audio-visual equipment", "Outdoor space", "Dance floor", "Bridal suite", "Private dining rooms", "Bar service", "Breakout rooms", "Seating arrangements", "Decor services", "Projector and screen", "Sound system", "Lighting system", "Climate control", "Security staff", "Restrooms", "Photography area", "Kid-friendly play area", "Accessible facilities", "Green room", "Ticketing services", "Event planner services"]
 
 async function getPictureAddress() {
   const getPicsumResponse = await fetch("https://picsum.photos/282/186/");
@@ -18,13 +19,20 @@ function produceAlbum() {
   return Promise.all(pictureAddressPromises);
 }
 
+function produceFeaturesArray(numberOfFeatures){
+  let featuresArray = []
+  for (let i = 0; i < numberOfFeatures; i++){
+    const shuffledFeatures = venuesAmenities.sort(() => 0.5 - Math.random());
+    featuresArray = shuffledFeatures.slice(0, numberOfFeatures);
+  }
+  return featuresArray
+}
+
 async function produceFakerData() {
   const venues = [];
   const venuesDetails = [];
   const albums = [];
-  const venuesAmenities = ["Wi-Fi", "Parking", "Stage", "Catering services", "Audio-visual equipment", "Outdoor space", "Dance floor", "Bridal suite", "Private dining rooms", "Bar service", "Breakout rooms", "Seating arrangements", "Decor services", "Projector and screen", "Sound system", "Lighting system", "Climate control", "Security staff", "Restrooms", "Photography area", "Kid-friendly play area", "Accessible facilities", "Green room", "Ticketing services", "Event planner services"]
   const data = { venues: venues, venuesDetails: venuesDetails, albums: albums, venuesAmenities: venuesAmenities };
-
   for (let i = 0; i < 100; i++) {
     const address = addresses[i]
     const album = await produceAlbum()
@@ -46,11 +54,7 @@ async function produceFakerData() {
     };
     venues.push(venue);
     const numberOfFeatures = faker.number.int({ min: 4, max: 10 })
-    let featuresArray = []
-    for (let i = 0; i > numberOfFeatures; i++){
-      const shuffledFeatures = venuesAmenities.sort(() => 0.5 - Math.random());
-      featuresArray = shuffledFeatures.slice(0, n);
-    }
+    let featuresArray = produceFeaturesArray(numberOfFeatures)
     const venueDetails = {
       id: i,
       venuesBasicData: venue,
