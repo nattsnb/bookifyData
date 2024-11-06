@@ -3,12 +3,31 @@ import { saveAs } from "file-saver";
 import { addresses } from "/addresses.js";
 
 const venuesAmenities = [
-  "Wi-Fi", "Parking", "Stage", "Catering services", "Audio-visual equipment",
-  "Outdoor space", "Dance floor", "Bridal suite", "Private dining rooms", "Bar service",
-  "Breakout rooms", "Seating arrangements", "Decor services", "Projector and screen",
-  "Sound system", "Lighting system", "Climate control", "Security staff",
-  "Restrooms", "Photography area", "Kid-friendly play area", "Accessible facilities",
-  "Green room", "Ticketing services", "Event planner services"
+  { id: 1, name: "Wi-Fi" },
+  { id: 2, name: "Parking" },
+  { id: 3, name: "Stage" },
+  { id: 4, name: "Catering services" },
+  { id: 5, name: "Audio-visual equipment" },
+  { id: 6, name: "Outdoor space" },
+  { id: 7, name: "Dance floor" },
+  { id: 8, name: "Bridal suite" },
+  { id: 9, name: "Private dining rooms" },
+  { id: 10, name: "Bar service" },
+  { id: 11, name: "Breakout rooms" },
+  { id: 12, name: "Seating arrangements" },
+  { id: 13, name: "Decor services" },
+  { id: 14, name: "Projector and screen" },
+  { id: 15, name: "Sound system" },
+  { id: 16, name: "Lighting system" },
+  { id: 17, name: "Climate control" },
+  { id: 18, name: "Security staff" },
+  { id: 19, name: "Restrooms" },
+  { id: 20, name: "Photography area" },
+  { id: 21, name: "Kid-friendly play area" },
+  { id: 22, name: "Accessible facilities" },
+  { id: 23, name: "Green room" },
+  { id: 24, name: "Ticketing services" },
+  { id: 25, name: "Event planner services" }
 ];
 
 async function getPictureAddress() {
