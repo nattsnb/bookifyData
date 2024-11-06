@@ -2,7 +2,14 @@ import { faker } from "@faker-js/faker";
 import { saveAs } from "file-saver";
 import { addresses } from "/addresses.js";
 
-const venuesAmenities = ["Wi-Fi", "Parking", "Stage", "Catering services", "Audio-visual equipment", "Outdoor space", "Dance floor", "Bridal suite", "Private dining rooms", "Bar service", "Breakout rooms", "Seating arrangements", "Decor services", "Projector and screen", "Sound system", "Lighting system", "Climate control", "Security staff", "Restrooms", "Photography area", "Kid-friendly play area", "Accessible facilities", "Green room", "Ticketing services", "Event planner services"]
+const venuesAmenities = [
+  "Wi-Fi", "Parking", "Stage", "Catering services", "Audio-visual equipment",
+  "Outdoor space", "Dance floor", "Bridal suite", "Private dining rooms", "Bar service",
+  "Breakout rooms", "Seating arrangements", "Decor services", "Projector and screen",
+  "Sound system", "Lighting system", "Climate control", "Security staff",
+  "Restrooms", "Photography area", "Kid-friendly play area", "Accessible facilities",
+  "Green room", "Ticketing services", "Event planner services"
+];
 
 async function getPictureAddress() {
   const getPicsumResponse = await fetch("https://picsum.photos/282/186/");
@@ -19,24 +26,22 @@ function produceAlbum() {
   return Promise.all(pictureAddressPromises);
 }
 
-function produceFeaturesArray(numberOfFeatures){
-  let featuresArray = []
-  for (let i = 0; i < numberOfFeatures; i++){
-    const shuffledFeatures = venuesAmenities.sort(() => 0.5 - Math.random());
-    featuresArray = shuffledFeatures.slice(0, numberOfFeatures);
-  }
-  return featuresArray
+function produceFeaturesArray(numberOfFeatures) {
+  const shuffledFeatures = venuesAmenities.sort(() => 0.5 - Math.random());
+  return shuffledFeatures.slice(0, numberOfFeatures);
 }
 
 async function produceFakerData() {
   const venues = [];
   const venuesDetails = [];
   const albums = [];
-  const data = { venues: venues, venuesDetails: venuesDetails, albums: albums, venuesAmenities: venuesAmenities };
+  const data = { venues, venuesDetails, albums, venuesAmenities };
+
   for (let i = 0; i < 100; i++) {
-    const address = addresses[i]
-    const album = await produceAlbum()
+    const address = addresses[i];
+    const album = await produceAlbum();
     albums.push(album);
+
     const venue = {
       id: i,
       location: {
@@ -46,52 +51,53 @@ async function produceFakerData() {
         city: "EXETER"
       },
       pricePerNightInEURCent: faker.number.int({ max: 10000 }).toString(),
-      rating: faker.number.float({ max: 5, multipleOf: 0.1 }),
+      rating: faker.number.float({ max: 5, fractionDigits: 1 }),
       capacity: faker.number.int({ max: 10 }),
       name: `${faker.word.adjective()} ${faker.word.noun()}`,
       albumId: i,
-      coverPhoto: album[0],
+      coverPhoto: album[0]
     };
     venues.push(venue);
-    const numberOfFeatures = faker.number.int({ min: 4, max: 10 })
-    let featuresArray = produceFeaturesArray(numberOfFeatures)
+
+    const numberOfFeatures = faker.number.int({ min: 4, max: 10 });
+    const featuresArray = produceFeaturesArray(numberOfFeatures);
+
     const venueDetails = {
       id: i,
       venuesBasicData: venue,
-      description: faker.word.words(80),
+      description: faker.lorem.words(80),
       features: featuresArray,
       sleepingDetails: {
         maxCapacity: venue.capacity,
-        amountOfBeds: venue.capacity / 2,
-        extraDetails: faker.word.words({ count: { min: 0, max: 5 } }),
+        amountOfBeds: Math.ceil(venue.capacity / 2),
+        extraDetails: faker.lorem.words(faker.number.int({ min: 0, max: 5 }))
       },
       checkInHourPM: faker.number.int({ min: 15, max: 23 }),
       checkOutHourAM: faker.number.int({ min: 9, max: 12 }),
       distanceFromCityCenterInKM: faker.number.float({
         min: 0,
         max: 10,
-        multipleOf: 0.5,
+        multipleOf: 0.5
       }),
       contactDetails: {
-        phone: faker.phone.number({ style: "international" }),
-        email: faker.internet.email(),
+        phone: faker.phone.number("+# (###) ###-####"),
+        email: faker.internet.email()
       },
       socialMediaLinks: {
         fb: "www.facebook.com",
         instagram: "www.instagram.com",
         twitter: "www.twitter.com",
-        website: "www.google.com",
-      },
+        website: "www.google.com"
+      }
     };
     venuesDetails.push(venueDetails);
   }
-  return data
+  return data;
 }
 
-function saveTheFile(data){
-  let blob = new Blob([JSON.stringify(data)], { type: ".json" });
+function saveTheFile(data) {
+  const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
   saveAs(blob, "data.json");
 }
 
-produceFakerData()
-    .then(saveTheFile)
+produceFakerData().then(saveTheFile);
