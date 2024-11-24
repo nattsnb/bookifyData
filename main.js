@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 import { saveAs } from "file-saver";
 import { addresses } from "/addresses.js";
 
-const venuesAmenities = [
+const filtersAndOccasions = [
   {
     amenities: [
       { id: 0, name: "parking" },
@@ -155,15 +155,21 @@ function produceAlbum() {
   return Promise.all(pictureAddressPromises);
 }
 
-function produceFeaturesArray(numberOfFeatures) {
-  const shuffledFeatures = venuesAmenities.sort(() => 0.5 - Math.random());
-  return shuffledFeatures.slice(0, numberOfFeatures);
+function produceActiveFiltersAndOccasionsArray() {
+
+  const amenitiesNumber = faker.number.int({ min: 4, max: filtersAndOccasions.amenities.length });
+  const activeAmenities = produceActiveFilters(amenitiesNumber);
+}
+
+function produceActiveFilters(numberOfActiveFiltres) {
+  const shuffledFeatures = filtersAndOccasions.sort(() => 0.5 - Math.random());
+  return shuffledFeatures.slice(0, numberOfActiveFiltres);
 }
 
 async function produceFakerData() {
   const venues = [];
   const venuesDetails = [];
-  const data = { venues, venuesDetails, venuesAmenities };
+  const data = { venues, venuesDetails, venuesAmenities: filtersAndOccasions };
 
   for (let i = 0; i < 100; i++) {
     const address = addresses[i];
