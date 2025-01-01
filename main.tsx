@@ -2,7 +2,90 @@ import { faker } from "@faker-js/faker";
 import { saveAs } from "file-saver";
 import { addresses } from "/addresses.js";
 
-const filtersAndOccasions = {
+interface Filter {
+  id: number;
+  name: string;
+}
+
+interface Occasion {
+  id: number;
+  name: string;
+  requiredAmenities: number[];
+  requiredRoomAmenities: number[];
+  accessibility: number[];
+  neighborhoods: number[];
+}
+
+interface FiltersAndOccasions {
+  amenities: Filter[];
+  roomAmenities: Filter[];
+  handicapAccessibility: Filter[];
+  neighbourhoods: Filter[];
+  occasions: Occasion[];
+}
+
+interface Location {
+  streetNumber: string;
+  streetName: string;
+  postalCode: string;
+  city: string;
+}
+
+interface Venue {
+  id: number;
+  location: Location;
+  pricePerNightInEURCent: string;
+  rating: number;
+  reviews: number;
+  capacity: number;
+  name: string;
+  images: string[];
+}
+
+interface VenueDetails {
+  id: number;
+  venuesBasicData: Venue;
+  description: string;
+  activeFiltersAndOccasions: ActiveFiltersAndOccasions;
+  sleepingDetails: SleepingDetails;
+  checkInHourPM: number;
+  checkOutHourAM: number;
+  distanceFromCityCenterInKM: number;
+  contactDetails: ContactDetails;
+  socialMediaLinks: SocialMediaLinks;
+}
+
+interface ActiveFiltersAndOccasions {
+  activeFilters: ActiveFilters;
+  suitableOccasions: number[];
+}
+
+interface ActiveFilters {
+  activeAmenities: number[];
+  activeRoomAmenities: number[];
+  activeHandicapAccessibility: number[];
+  activeNeighbourhoods: number[];
+}
+
+interface SleepingDetails {
+  maxCapacity: number;
+  amountOfBeds: number;
+  extraDetails: string;
+}
+
+interface ContactDetails {
+  phone: string;
+  email: string;
+}
+
+interface SocialMediaLinks {
+  fb: string;
+  instagram: string;
+  twitter: string;
+  website: string;
+}
+
+const filtersAndOccasions: FiltersAndOccasions = {
   amenities: [
     { id: 0, name: "parking" },
     { id: 1, name: "WiFi" },
@@ -162,104 +245,70 @@ const filtersAndOccasions = {
   ],
 };
 
-async function getPictureAddress() {
+async function getPictureAddress(): Promise<string> {
   const getPicsumResponse = await fetch("https://picsum.photos/282/186/");
   return getPicsumResponse.url;
 }
 
-function produceAlbum() {
-  const pictureAddressPromises = [];
+function produceAlbum(): Promise<string[]> {
+  const pictureAddressPromises: Promise<string>[] = [];
   const numberOfPictures = faker.number.int({ min: 4, max: 10 });
   for (let i = 0; i < numberOfPictures; i++) {
-    const addressPromise = getPictureAddress();
-    pictureAddressPromises.push(addressPromise);
+    pictureAddressPromises.push(getPictureAddress());
   }
   return Promise.all(pictureAddressPromises);
 }
 
-function produceActiveFiltersAndOccasionsArray() {
-  const activeFilters = {
-    activeAmenities: produceActiveFiltersIds(
-      filtersAndOccasions.amenities,
-      faker.number.int({ min: 8, max: filtersAndOccasions.amenities.length }),
-    ),
-    activeRoomAmenities: produceActiveFiltersIds(
-      filtersAndOccasions.roomAmenities,
-      faker.number.int({
-        min: 2,
-        max: filtersAndOccasions.roomAmenities.length,
-      }),
-    ),
-    activeHandicapAccessibility: produceActiveFiltersIds(
-      filtersAndOccasions.handicapAccessibility,
-      faker.number.int({
-        min: 1,
-        max: filtersAndOccasions.handicapAccessibility.length,
-      }),
-    ),
-    activeNeighbourhoods: produceActiveFiltersIds(
-      filtersAndOccasions.neighbourhoods,
-      faker.number.int({
-        min: 7,
-        max: filtersAndOccasions.neighbourhoods.length,
-      }),
-    ),
-  };
-
-  const suitableOccasions = getSuitableOccasions(activeFilters);
-
-  return {
-    activeFilters,
-    suitableOccasions,
-  };
-}
-
-const getSuitableOccasions = (activeFilters) => {
-  const occasions = filtersAndOccasions.occasions;
-
-  const hasAllRequired = (required, available) => {
-    return required.every((reqId) => available.includes(reqId));
-  };
-
-  const matchingOccasions = occasions.filter((occasion) => {
-    const matches =
-      hasAllRequired(
-        occasion.requiredAmenities,
-        activeFilters.activeAmenities,
-      ) &&
-      hasAllRequired(
-        occasion.requiredRoomAmenities,
-        activeFilters.activeRoomAmenities,
-      ) &&
-      hasAllRequired(
-        occasion.accessibility,
-        activeFilters.activeHandicapAccessibility,
-      ) &&
-      hasAllRequired(
-        occasion.neighborhoods,
-        activeFilters.activeNeighbourhoods,
-      );
-
-    return matches;
-  });
-
-  return matchingOccasions.map((occasion) => occasion.id);
-};
-function produceActiveFiltersIds(arrayOfFilters, numberOfActiveFilters) {
+function produceActiveFiltersIds(
+  arrayOfFilters: Filter[],
+  numberOfActiveFilters: number,
+): number[] {
   const shuffledFeatures = arrayOfFilters.sort(() => 0.5 - Math.random());
   const selectedFeatures = shuffledFeatures.slice(0, numberOfActiveFilters);
   return selectedFeatures.map((feature) => feature.id);
 }
 
-async function produceFakerData() {
-  const venues = [];
-  const venuesDetails = [];
+const getSuitableOccasions = (activeFilters: ActiveFilters): number[] => {
+  const hasAllRequired = (required: number[], available: number[]): boolean =>
+    required.every((reqId) => available.includes(reqId));
+
+  return filtersAndOccasions.occasions
+    .filter((occasion) => {
+      return (
+        hasAllRequired(
+          occasion.requiredAmenities,
+          activeFilters.activeAmenities,
+        ) &&
+        hasAllRequired(
+          occasion.requiredRoomAmenities,
+          activeFilters.activeRoomAmenities,
+        ) &&
+        hasAllRequired(
+          occasion.accessibility,
+          activeFilters.activeHandicapAccessibility,
+        ) &&
+        hasAllRequired(
+          occasion.neighborhoods,
+          activeFilters.activeNeighbourhoods,
+        )
+      );
+    })
+    .map((occasion) => occasion.id);
+};
+
+async function produceFakerData(): Promise<{
+  venues: Venue[];
+  venuesDetails: VenueDetails[];
+  venuesAmenities: FiltersAndOccasions;
+}> {
+  const venues: Venue[] = [];
+  const venuesDetails: VenueDetails[] = [];
   const data = { venues, venuesDetails, venuesAmenities: filtersAndOccasions };
 
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 18; i++) {
     const address = addresses[i];
 
-    const venue = {
+    const venue: Venue = {
       id: i,
       location: {
         streetNumber: address[0],
@@ -274,11 +323,53 @@ async function produceFakerData() {
       name: `${faker.word.adjective()} ${faker.word.noun()}`,
       images: await produceAlbum(),
     };
-    venues.push(venue);
 
-    const activeFiltersAndOccasions = produceActiveFiltersAndOccasionsArray();
+    const activeFiltersAndOccasions: ActiveFiltersAndOccasions = {
+      activeFilters: {
+        activeAmenities: produceActiveFiltersIds(
+          filtersAndOccasions.amenities,
+          faker.number.int({
+            min: 8,
+            max: filtersAndOccasions.amenities.length,
+          }),
+        ),
+        activeRoomAmenities: produceActiveFiltersIds(
+          filtersAndOccasions.roomAmenities,
+          faker.number.int({
+            min: 2,
+            max: filtersAndOccasions.roomAmenities.length,
+          }),
+        ),
+        activeHandicapAccessibility: produceActiveFiltersIds(
+          filtersAndOccasions.handicapAccessibility,
+          faker.number.int({
+            min: 1,
+            max: filtersAndOccasions.handicapAccessibility.length,
+          }),
+        ),
+        activeNeighbourhoods: produceActiveFiltersIds(
+          filtersAndOccasions.neighbourhoods,
+          faker.number.int({
+            min: 7,
+            max: filtersAndOccasions.neighbourhoods.length,
+          }),
+        ),
+      },
+      suitableOccasions: getSuitableOccasions({
+        activeAmenities: produceActiveFiltersIds(
+          filtersAndOccasions.amenities,
+          faker.number.int({
+            min: 8,
+            max: filtersAndOccasions.amenities.length,
+          }),
+        ),
+        activeRoomAmenities: [],
+        activeHandicapAccessibility: [],
+        activeNeighbourhoods: [],
+      }),
+    };
 
-    const venueDetails = {
+    const venueDetails: VenueDetails = {
       id: i,
       venuesBasicData: venue,
       description: faker.lorem.words(80),
@@ -306,12 +397,15 @@ async function produceFakerData() {
         website: "www.google.com",
       },
     };
+
+    venues.push(venue);
     venuesDetails.push(venueDetails);
   }
+
   return data;
 }
 
-function saveTheFile(data) {
+function saveTheFile(data: any): void {
   const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
   saveAs(blob, "data.json");
 }
