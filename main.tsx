@@ -85,6 +85,12 @@ interface SocialMediaLinks {
   website: string;
 }
 
+interface Data {
+  venues: Venue[],
+  venueDetails: VenueDetails[],
+  venueAmenities: [],
+}
+
 const filtersAndOccasions: FiltersAndOccasions = {
   amenities: [
     { id: 0, name: "parking" },
@@ -305,7 +311,7 @@ async function produceFakerData(): Promise<{
   const venuesDetails: VenueDetails[] = [];
   const data = { venues, venuesDetails, venuesAmenities: filtersAndOccasions };
 
-  for (let i = 0; i < 18; i++) {
+  for (let i = 0; i <2; i++) {
     const address = addresses[i];
 
     const venue: Venue = {
@@ -405,7 +411,7 @@ async function produceFakerData(): Promise<{
   return data;
 }
 
-function saveTheFile(data: any): void {
+function saveTheFile(data: Data): void {
   const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
   saveAs(blob, "data.json");
 }
